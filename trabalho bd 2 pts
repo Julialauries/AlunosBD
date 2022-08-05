@@ -1,0 +1,132 @@
+-- Criando Tabela CLIENTE 
+create table CLIENTE 
+( 
+ CODIGO_CLIENTE number(3),  --PK
+ NOME varchar(45), 
+ CPF_CNPJ varchar2(14),
+ ENDERECO varchar2(30),  
+ BAIRRO varchar(45),  
+ CIDADE varchar(45), 
+ UF varchar(45) 
+); 
+
+-- Criando Tabela VENDA 
+create table VENDA 
+( 
+ NUM_VENDA number(3),  --PK  
+ DATA_VENDA date, 
+ CODIGO_CLIENTE number(3), --FK
+ DATA_ENTREGA date
+); 
+
+
+-- Criando Tabela ITEM_VENDA 
+create table ITEM_VENDA 
+( 
+ NUM_ITEM number(2),  --PK  
+ NUM_VENDA number(3), --PK --FK
+ CODIGO_PRODUTO number(3), --FK
+ QNT_VENDIDA NUMBER(3),  
+ VALOR_PRODUTO number(6,2),  
+); 
+
+
+-- Criando Tabela PRODUTO 
+create table PRODUTO 
+( 
+ CODIGO_PRODUTO number(3),  --PK  
+ DESCRICAO_PRODUTO  varchar2(3),
+ VALOR_PRODUTO number(6,2),  
+ SALDO number(4),  
+); 
+
+
+--PK  
+alter table ALUNO add 
+ constraint PK_CODIGO_CLIENTE primary key (CODIGO_CLIENTE) using index tablespace NIX_DATA; alter table CURSO add 
+ constraint PK_NUM_VENDA primary key (NUM_VENDA) using index tablespace NIX_DATA; alter table PROFESSOR add 
+ constraint PK_NUM_ITEM primary key (NUM_ITEM) using index tablespace NIX_DATA;  
+ 
+ 
+ 
+ 
+ 
+--FK 
+alter table CURSOALUNO 
+ add constraint ALUNO_IDALUNO foreign key (IDALUNO) 
+ references ALUNO (IDALUNO); 
+alter table CURSOALUNO 
+ add constraint CURSO_IDCURSO foreign key (IDCURSO) 
+ references CURSO (IDCURSO); 
+alter table CURSO 
+ add constraint PROFESSOR_IDPROFESSOR foreign key (IDPROFESSOR)  references PROFESSOR (IDPROFESSOR);
+ 
+ 
+ 
+--Criação de sequences para estruturas 
+create sequence seq_aluno start with 1 nocycle nocache; 
+create sequence seq_cursoaluno start with 1 nocycle nocache; 
+create sequence seq_curso start with 1 nocycle nocache; 
+create sequence seq_professor start with 1 nocycle nocache; 
+
+
+
+--Criação de índices para Foreign Key's 
+create index IDX_CURSOALUNO_ALUNO on CURSOALUNO (IDALUNO); 
+create index IDX_CURSOALUNO_CURSO on CURSOALUNO (IDCURSO); 
+create index IDX_CURSO_PROFESSOR on PROFESSOR(IDPROFESSOR); 
+
+
+--Inserir 4 registros para cada estrutura; 
+--Registro aluno 
+insert into aluno(idaluno, nome, email, cpf, endereco, numero, complemento, cidade, estado) values  (1,'Antonio','Antonio@hotmail.com','11111111111','Rua A','101','Predio A','Anapolis','Amapá'); 
+insert into aluno(idaluno, nome, email, cpf, endereco, numero, complemento, cidade, estado) values  (2,'Bruno','Bruno@hotmail.com','22222222222','Rua B','102','Predio B','Brumadinho','Bahia'); 
+insert into aluno(idaluno, nome, email, cpf, endereco, numero, complemento, cidade, estado) values  (25,'Bruno','Bruno@hotmail.com','3333333333','Rua C','103','Predio C','Catanduva','Ceara'); 
+insert into aluno(idaluno, nome, email, cpf, endereco, numero, complemento, cidade, estado) values  (250,'Danilo','Danilo@hotmail.com','4444444444','Rua D','104','Predio D','Divinopolis','Sao Paulo');
+
+
+ 
+--Registro professor 
+insert into professor(idprofessor, nome, email, cpf, endereco, numero, complemento, cidade, estado)  values (111,'Andre','Andre@hotmail.com','10111111111','Rua A1','110','Predio A1','Analandia','Acre'); 
+insert into professor(idprofessor, nome, email, cpf, endereco, numero, complemento, cidade, estado)  values (222,'Bento','Bento@hotmail.com','20222222222','Rua B1','220','Predio B1','Bacabal','Bahia'); 
+insert into professor(idprofessor, nome, email, cpf, endereco, numero, complemento, cidade, estado)  values (333,'Cesar','Cesar@hotmail.com','30333333333','Rua C1','330','Predio C1','Cuiaba','Ceara'); 
+insert into professor(idprofessor, nome, email, cpf, endereco, numero, complemento, cidade, estado)  values (444,'Denilson','Denilson@hotmail.com','40444444444','Rua D1','440','Predio  D1','Delfinopolis','Sao Paulo'); 
+
+
+
+--Registro Curso 
+insert into curso(idcurso, nome, idprofessor) values (11,'Arqueologia','111'); 
+insert into curso(idcurso, nome, idprofessor) values (22,'Biomedicina','222'); 
+insert into curso(idcurso, nome, idprofessor) values (33,'Ciencia contabeis','333'); insert into curso(idcurso, nome, idprofessor) values (44,'Direito','444');
+
+
+
+--Registro Cursoaluno 
+insert into cursoaluno(idcurso, idaluno) values (11,'1'); 
+insert into cursoaluno(idcurso, idaluno) values (22,'2'); 
+insert into cursoaluno(idcurso, idaluno) values (33,'25'); 
+insert into cursoaluno(idcurso, idaluno) values (44,'2'); 
+
+
+
+--Excluir o aluno com idAluno maior que 25; 
+delete aluno 
+where idaluno > 25; 
+
+
+--Atualizar o nome de todos os alunos para caixa alta, ou seja, para letras maiúsculas. update aluno  
+ set nome = upper(nome); 
+  
+  
+  
+--Para cada curso exibir: idCurso, nome, qtdAlunos; 
+/** select idaluno,idcurso,nome, 
+from aluno, cursoaluno, curso 
+where aluno.idaluno = cursoaluno.aluno_idaluno 
+and cursoaluno.curso_idcurso = curso.idcurso; **/ 
+
+
+--Listas os nomes dos alunos desconsiderando os repetidos; 
+ select distinct nome from aluno; 
+  
+--Listar os professores e a quantidade de cursos que cada um ministra.
